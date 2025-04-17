@@ -272,6 +272,9 @@ public class JadxCLIArgs {
 	@Parameter(names = { "--disable-plugins" }, description = "comma separated list of plugin ids to disable")
 	protected String disablePlugins = "";
 
+	@Parameter(names = { "--daemon" }, description = "run in daemon mode")
+	protected boolean daemonMode = false;
+
 	@Parameter(names = { "--version" }, description = "print jadx version")
 	protected boolean printVersion = false;
 
@@ -582,6 +585,10 @@ public class JadxCLIArgs {
 
 	public String getDisablePlugins() {
 		return disablePlugins;
+	}
+
+	public boolean isDaemonMode() {
+		return daemonMode;
 	}
 
 	static class RenameConverter implements IStringConverter<Set<RenameEnum>> {

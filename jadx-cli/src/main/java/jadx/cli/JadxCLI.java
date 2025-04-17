@@ -74,14 +74,22 @@ public class JadxCLI {
 			if (!SingleClassMode.process(jadx, cliArgs)) {
 				save(jadx);
 			}
+			int result;
 			int errorsCount = jadx.getErrorsCount();
 			if (errorsCount != 0) {
 				jadx.printErrorsReport();
 				LOG.error("finished with errors, count: {}", errorsCount);
-				return 1;
+				result = 1;
+			} else {
+				LOG.info("done");
+				result = 0;
 			}
-			LOG.info("done");
-			return 0;
+
+			if (cliArgs.isDaemonMode()) {
+				waitForInterrupt();
+			}
+
+			return result;
 		}
 	}
 
@@ -127,6 +135,21 @@ public class JadxCLI {
 			});
 			// dumb line clear :)
 			System.out.print("                                                             \r");
+		}
+	}
+
+	private static void waitForInterrupt() {
+		// Add shutdown hook to handle Ctrl+C
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			LOG.info("Shutdown signal received. Exiting...");
+		}));
+
+		// Wait indefinitely until interrupted
+		LOG.info("Press Ctrl+C to exit.");
+		try {
+			Thread.sleep(Long.MAX_VALUE);
+		} catch (InterruptedException e) {
+			// Exit gracefully when interrupted
 		}
 	}
 }
